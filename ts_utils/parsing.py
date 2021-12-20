@@ -8,7 +8,14 @@ from git.repo import Repo
 from tqdm.auto import tqdm
 from tree_sitter import Language, Parser, Tree
 
+__all__ = [
+    'parse',
+    'get_supertype_mappings',
+    'get_node_types',
+]
+
 SUPPORTED_LANGUAGES = {"java", "python", "javascript"}
+
 
 # tree-sitter grammar repo management
 def clone_repo(repo_url: str, repo_path: str):
@@ -91,7 +98,8 @@ def load_grammar(
     language_library = os.path.join(cache_dir, language_library)
     if not os.path.exists(language_library):
         print(f"Building language library")
-        build_language_library(cache_dir=cache_dir, library_path=language_library)
+        build_language_library(cache_dir=cache_dir,
+                               library_path=language_library)
 
     return Language(language_library, language)
 
@@ -106,9 +114,9 @@ def make_parser(
     grammar from github and cache it. Subsequent calls will reuse the
     cached grammar.
     """
-    grammar = load_grammar(
-        language, cache_dir=cache_dir, language_library=language_library
-    )
+    grammar = load_grammar(language,
+                           cache_dir=cache_dir,
+                           language_library=language_library)
     parser: Parser = Parser()
     parser.set_language(grammar)
 
@@ -130,7 +138,8 @@ def parse(
 
 
 def get_supertype_mappings(
-    language: str, cache_dir: Optional[str] = None
+    language: str,
+    cache_dir: Optional[str] = None
 ) -> Tuple[Mapping[str, List[str]], Mapping[str, str]]:
     """Loads node <-> supertype mappings for give programming language. This
     is obtained from node-types.json file, if included within the repository.

@@ -24,13 +24,15 @@ from tree_sitter import Node, TreeCursor
 
 __all__ = [
     "iternodes", "iternodes_with_parent", "iternodes_with_edges",
-    "iternodes_indexed"
+    "iternodes_indexed", "Predicate", "TraversalFilter"
 ]
 
 T = TypeVar("T")
 Predicate = Callable[[T], bool]
 
+TraversalFilter = Predicate[Node]
 always = lambda val: lambda _: val
+default_traversal_filter = always(True)
 
 
 def iternodes(

@@ -7,28 +7,33 @@ from scipy.sparse import coo_matrix
 from tree_sitter import Node, TreeCursor
 
 from ts_utils.core import hash_node
-from ts_utils.iter import iternodes, iternodes_with_parent
+from ts_utils.iter import (TraversalFilter, default_traversal_filter,
+                           iternodes, iternodes_with_parent)
 
 NodesById = dict[int, Tuple[int, Node]]
 
 __all__ = ["parent_mask", "next_sibling_mask", "prev_sibling_mask"]
 
 
-def parent_mask(cursor: TreeCursor, nodes: NodesById = None):
+def parent_mask(cursor: TreeCursor,
+                nodes: NodesById = None,
+                traversal_filter: TraversalFilter = default_traversal_filter):
     """Returns a sparse boolean matrix representing an adjacency
     matrix of the tree rooted at cursor
     """
     if not nodes:
         nodes = {
             hash_node(node): (i, node)
-            for i, node in enumerate(iternodes(cursor))
+            for i, node in enumerate(
+                iternodes(cursor, traversal_filter=traversal_filter))
         }
 
     data = []
     rows = []
     cols = []
 
-    for node, parent in iternodes_with_parent(cursor):
+    for node, parent in iternodes_with_parent(
+            cursor, traversal_filter=traversal_filter):
         if parent:
             parent_id = nodes[hash_node(parent)][0]
             node_id = nodes[hash_node(node)][0]
@@ -42,18 +47,22 @@ def parent_mask(cursor: TreeCursor, nodes: NodesById = None):
                       shape=(len(nodes), len(nodes)))
 
 
-def next_sibling_mask(cursor, nodes=None):
+def next_sibling_mask(
+        cursor,
+        nodes=None,
+        traversal_filter: TraversalFilter = default_traversal_filter):
     if not nodes:
         nodes = {
             hash_node(node): (i, node)
-            for i, node in enumerate(iternodes(cursor))
+            for i, node in enumerate(
+                iternodes(cursor, traversal_filter=traversal_filter))
         }
 
     data = []
     rows = []
     cols = []
 
-    for node in iternodes(cursor):
+    for node in iternodes(cursor, traversal_filter=traversal_filter):
         curr = node
         node_id = nodes[hash_node(node)][0]
         while curr := curr.next_sibling:
@@ -67,18 +76,22 @@ def next_sibling_mask(cursor, nodes=None):
                       shape=(len(nodes), len(nodes)))
 
 
-def prev_sibling_mask(cursor, nodes=None):
+def prev_sibling_mask(
+        cursor,
+        nodes=None,
+        traversal_filter: TraversalFilter = default_traversal_filter):
     if not nodes:
         nodes = {
             hash_node(node): (i, node)
-            for i, node in enumerate(iternodes(cursor))
+            for i, node in enumerate(
+                iternodes(cursor, traversal_filter=traversal_filter))
         }
 
     data = []
     rows = []
     cols = []
 
-    for node in iternodes(cursor):
+    for node in iternodes(cursor, traversal_filter=traversal_filter):
         curr = node
         node_id = nodes[hash_node(node)][0]
         while curr := curr.prev_sibling:
