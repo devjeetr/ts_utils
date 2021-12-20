@@ -95,11 +95,11 @@ Note: `ts_utils.hash_node` only works with nodes that do not contain errors (`no
 `ts_utils.matrix` provides utilities to convert trees to sparse adjacency matrices.
 
 ```python
-    matrix = ts_utils.matrix.parent_mask(...)
-    child_mask = matrix.transpose()
+matrix = ts_utils.matrix.parent_mask(...)
+child_mask = matrix.transpose()
 
-    next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
-    prev_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
+next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
+prev_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
 
-    all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
+all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
 ```
