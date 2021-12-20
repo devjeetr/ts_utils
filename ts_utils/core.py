@@ -4,6 +4,8 @@ from tree_sitter import Node
 
 from .iter import iternodes_with_edges
 
+__all__ = ["hash_node", "node_text", "sexp"]
+
 
 def hash_node(node: Node) -> int:
     """Deterministically hashes a tree_sitter Node. Uses
@@ -28,16 +30,16 @@ def hash_node(node: Node) -> int:
     # parent_type = parent.type if parent else None
     # return hash(f"{node.start_byte}#{node.end_byte}#{node.type}")
 
-    return hash((node.start_byte, node.end_byte,node.type))
+    return hash((node.start_byte, node.end_byte, node.type))
 
 
 def node_text(source: str, node: Node) -> str:
-    return source[node.start_byte : node.end_byte]
+    return source[node.start_byte:node.end_byte]
 
 
-def sexp(
-    cursor, wrap: int = 50, node_to_str: Callable[[Node], str] = lambda node: node.type
-) -> str:
+def sexp(cursor,
+         wrap: int = 50,
+         node_to_str: Callable[[Node], str] = lambda node: node.type) -> str:
     """Pretty-formatted s-expr representation of
     the tree rooted at the given cursor. Similar to
     Node.sexp() but formatted differently.
@@ -57,7 +59,6 @@ def sexp(
     str
         s-expr string
     """
-
     def named_node_w_edges(cursor):
         for node, parent, edge in iternodes_with_edges(cursor):
             if node.is_named:
@@ -77,8 +78,8 @@ def sexp(
                 child_outputs.extend(sexp_from_stream(iterator))
             except StopIteration:
                 raise ValueError(
-                    "Iterator raised StopIteration. \n"
-                    + "Make sure iterator yields an inorder traversal of the tree."
+                    "Iterator raised StopIteration. \n" +
+                    "Make sure iterator yields an inorder traversal of the tree."
                 )
 
         # add prefix label when current child is a field member
@@ -86,9 +87,8 @@ def sexp(
         field_prefix = f"{edge}: " if edge else ""
         # node's representation itself
         node_repr = f"({node_to_str(node)}"
-        final_outputs = [
-            field_prefix + node_repr
-        ]  # either "field: (identifier" . or "(identifier"
+        final_outputs = [field_prefix + node_repr
+                         ]  # either "field: (identifier" . or "(identifier"
 
         if sum(map(len, child_outputs)) < wrap:
             # if the total length of this node's

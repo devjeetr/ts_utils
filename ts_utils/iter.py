@@ -22,6 +22,11 @@ from typing import Callable, Generator, Optional, Tuple, TypeVar
 
 from tree_sitter import Node, TreeCursor
 
+__all__ = [
+    "iternodes", "iternodes_with_parent", "iternodes_with_edges",
+    "iternodes_indexed"
+]
+
 T = TypeVar("T")
 Predicate = Callable[[T], bool]
 
@@ -75,6 +80,7 @@ def iternodes(
             if cursor.goto_next_sibling():
                 retracing = False
 
+
 def iternodes_indexed(
     cursor: TreeCursor, traversal_filter: Predicate[Node] = always(True)
 ) -> Generator[Tuple[int, Node], None, None]:
@@ -97,13 +103,14 @@ def iternodes_indexed(
     yield from enumerate(iternodes(cursor, traversal_filter=traversal_filter))
 
 
-
 class Move(Enum):
     PARENT = 1
     CHILD = 2
     SIBLING = 3
 
+
 NodeWithIndex = Tuple[int, Node]
+
 
 def iternodes_with_parent(
     cursor: TreeCursor,
@@ -164,6 +171,7 @@ def iternodes_with_parent(
             if cursor.goto_next_sibling():
                 retracing = False
 
+
 def iternodes_with_edges(
     cursor: TreeCursor, traversal_filter: Predicate[Node] = always(True)
 ) -> Generator[Tuple[TreeCursor, Optional[Move], Optional[str]], None, None]:
@@ -193,8 +201,7 @@ def iternodes_with_edges(
             # by traversal function. If traversal_filter(node) == False,
             # we skip the entire subtree
             yield node, parent_stack[
-                -1
-            ] if parent_stack else None, cursor.current_field_name()
+                -1] if parent_stack else None, cursor.current_field_name()
 
             if cursor.goto_first_child():
                 parent_stack.append(node)
@@ -214,4 +221,3 @@ def iternodes_with_edges(
 
             if cursor.goto_next_sibling():
                 retracing = False
-

@@ -11,6 +11,8 @@ from ts_utils.iter import iternodes, iternodes_with_parent
 
 NodesById = dict[int, Tuple[int, Node]]
 
+__all__ = ["parent_mask", "next_sibling_mask", "prev_sibling_mask"]
+
 
 def parent_mask(cursor: TreeCursor, nodes: NodesById = None):
     """Returns a sparse boolean matrix representing an adjacency
