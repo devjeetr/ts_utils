@@ -5,6 +5,15 @@ read-only analysis of programs using `tree-sitter`.
 
 **Warning**: ts_utils is currently unstable and under active development, with parts of the API likely to change.
 
+## Getting Started
+
+### Installation
+
+`ts_utils` can be installed directly from GitHub via:
+```
+pip install git+https://github.com/devjeetr/ts_utils
+```
+
 ### Parsing source into a tree
 
 `ts_utils.parsing` provides utilities that automate management of language libraries to ease parsing of source code.
