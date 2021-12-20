@@ -39,14 +39,15 @@ node_types = get_node_types('python') # loads 'node_types.json' if
 ### Working with `tree_sitter` trees
 
 `ts_utils.iter` provides `itertool` style utilities to iterate over
-nodes in a tree.
+nodes in a tree. Behind the scenes, `ts_utils.iter` uses efficient `TreeCursor` operations
+resulting in as close to bare-bones performance as possible.
 
 ```python
 from ts_utils.iter import iternodes, iternodes_with_parent
 
 tree = parse(...)
 
-for node in iternodes(tree):
+for node in iternodes(tree.walk()):
     ...
 ```
 
@@ -63,14 +64,13 @@ for node in iternodes(tree, only_named_nodes):
     ...
 ```
 
-Since `ts_utils.iter` provides pure functions to transform `TreeCursors` into iterators, their outputs can be arbitrarily composed with `map`, `compose`, `reduce` and `itertools.*`
+Since `ts_utils.iter` provides pure functions to transform `TreeCursors` into iterators, their outputs can be arbitrarily composed with `map`, `compose`, `reduce` and `itertools.*`. This composition allows you to create 
 
 ```python
 node_iter = iternodes(tree.walk())
-assignment_node_parents = map(
-    lambda node: node.type,
-    filter(lambda node: node.type == 'assignment', node_iter)
-) # returns all assignment nodes in the tree
+def find(node_types: Set[str], tree: Tree):
+    "Finds all nodes that are of a type specified in node_types"
+    return filter(lambda node: node.type in node_types, iternodes(tree.walk()))
 ```
 
 The traversal order of all functions in `ts_utils.iter` is deterministic
@@ -99,7 +99,7 @@ matrix = ts_utils.matrix.parent_mask(...)
 child_mask = matrix.transpose()
 
 next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
-prev_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
+prev_sibling_mask = ts_utils.matrix.prev_sibling_mask(...)
 
 all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
 ```
