@@ -16,16 +16,17 @@ source = """
     def main():
         print("Hello, World!")
 """
-
+# automatically downloads, caches and builds
+# language library for 'python'
 tree = parse(source, "python")
 # You can also provide your own
 # language library
 tree = parse(source, language_library)
 ```
 
-### Investigating `node_types` of a language
+### Investigating `node_types` of a language grammar
 
-You can investigate `node_types` of a language as follows:
+You can investigate [node_types](https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types) of a language as follows:
 
 ```python
 from ts_utils import get_node_types, get_supernode_mappings
