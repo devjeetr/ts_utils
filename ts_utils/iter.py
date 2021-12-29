@@ -18,7 +18,7 @@ nodes_a == nodes_b # True
 """
 
 from enum import Enum
-from typing import Callable, Generator, Optional, Tuple, TypeVar
+from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 
 from tree_sitter import Node, TreeCursor
 
@@ -223,3 +223,42 @@ def iternodes_with_edges(
 
             if cursor.goto_next_sibling():
                 retracing = False
+
+
+def itersiblings(cursor: TreeCursor) -> Iterator[Node]:
+    """Creates an iterator that iterates over all the siblings
+    of the node at the cursor position
+
+    Parameters
+    ----------
+    cursor : TreeCursor
+        cursor at which to start sibling
+        iteration
+
+    Yields
+    -------
+    Iterator[Node]
+        sibling nodes
+    """
+    while cursor.goto_next_sibling():
+        yield cursor.node
+
+
+def iterancestors(cursor: TreeCursor) -> Iterator[Node]:
+    """Creates an iterator that successively yields the
+    path from the cursor's current position to the
+    root of the subtree from which the cursor was created
+
+    Parameters
+    ----------
+    cursor : TreeCursor
+        cursor from which to start the iteration
+
+    Yields
+    -------
+    Iterator[Node]
+        All ancestors of the node at the initial
+        cursor position
+    """
+    while cursor.goto_parent():
+        yield cursor.node
