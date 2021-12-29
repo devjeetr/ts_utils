@@ -5,6 +5,15 @@ read-only analysis of programs using `tree-sitter`.
 
 **Warning**: ts_utils is currently unstable and under active development, with parts of the API likely to change.
 
+## Getting Started
+
+### Installation
+
+`ts_utils` can be installed directly from GitHub via:
+```
+pip install git+https://github.com/devjeetr/ts_utils
+```
+
 ### Parsing source into a tree
 
 `ts_utils.parsing` provides utilities that automate management of language libraries to ease parsing of source code.
@@ -16,16 +25,17 @@ source = """
     def main():
         print("Hello, World!")
 """
-
+# automatically downloads, caches and builds
+# language library for 'python'
 tree = parse(source, "python")
 # You can also provide your own
 # language library
 tree = parse(source, language_library)
 ```
 
-### Investigating `node_types` of a language
+### Investigating `node_types` of a language grammar
 
-You can investigate `node_types` of a language as follows:
+You can investigate [node_types](https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types) of a language as follows:
 
 ```python
 from ts_utils import get_node_types, get_supernode_mappings
@@ -38,14 +48,15 @@ node_types = get_node_types('python') # loads 'node_types.json' if
 ### Working with `tree_sitter` trees
 
 `ts_utils.iter` provides `itertool` style utilities to iterate over
-nodes in a tree.
+nodes in a tree. Behind the scenes, `ts_utils.iter` uses efficient `TreeCursor` operations
+resulting in as close to bare-bones performance as possible.
 
 ```python
 from ts_utils.iter import iternodes, iternodes_with_parent
 
 tree = parse(...)
 
-for node in iternodes(tree):
+for node in iternodes(tree.walk()):
     ...
 ```
 
@@ -62,14 +73,13 @@ for node in iternodes(tree, only_named_nodes):
     ...
 ```
 
-Since `ts_utils.iter` provides pure functions to transform `TreeCursors` into iterators, their outputs can be arbitrarily composed with `map`, `compose`, `reduce` and `itertools.*`
+Since `ts_utils.iter` provides pure functions to transform `TreeCursors` into iterators, their outputs can be arbitrarily composed with `map`, `compose`, `reduce` and `itertools.*`. This composition allows you to create 
 
 ```python
 node_iter = iternodes(tree.walk())
-assignment_node_parents = map(
-    lambda node: node.type,
-    filter(lambda node: node.type == 'assignment', node_iter)
-) # returns all assignment nodes in the tree
+def find(node_types: Set[str], tree: Tree):
+    "Finds all nodes that are of a type specified in node_types"
+    return filter(lambda node: node.type in node_types, iternodes(tree.walk()))
 ```
 
 The traversal order of all functions in `ts_utils.iter` is deterministic
@@ -94,11 +104,11 @@ Note: `ts_utils.hash_node` only works with nodes that do not contain errors (`no
 `ts_utils.matrix` provides utilities to convert trees to sparse adjacency matrices.
 
 ```python
-    matrix = ts_utils.matrix.parent_mask(...)
-    child_mask = matrix.transpose()
+matrix = ts_utils.matrix.parent_mask(...)
+child_mask = matrix.transpose()
 
-    next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
-    prev_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
+next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
+prev_sibling_mask = ts_utils.matrix.prev_sibling_mask(...)
 
-    all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
+all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
 ```
