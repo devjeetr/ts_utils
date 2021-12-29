@@ -26,10 +26,6 @@ def hash_node(node: Node) -> int:
     str
         hash of the node
     """
-    # parent = node.parent
-    # parent_type = parent.type if parent else None
-    # return hash(f"{node.start_byte}#{node.end_byte}#{node.type}")
-
     return hash((node.start_byte, node.end_byte, node.type))
 
 
