@@ -29,8 +29,10 @@ def hash_node(node: Node) -> int:
     return hash((node.start_byte, node.end_byte, node.type))
 
 
-def node_text(source: str, node: Node) -> str:
-    return source[node.start_byte:node.end_byte]
+def node_text(source, node, encoding='utf-8') -> str:
+    source_bytes = bytearray(source, encoding)
+
+    return source_bytes[node.start_byte:node.end_byte].decode(encoding)
 
 
 def sexp(cursor,
