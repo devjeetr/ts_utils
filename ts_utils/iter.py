@@ -20,7 +20,7 @@ nodes_a == nodes_b # True
 from enum import Enum
 from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 
-from tree_sitter import Node, TreeCursor
+from ts_utils.typing import Node, TreeCursor
 
 __all__ = [
     "iternodes", "iternodes_with_parent", "iternodes_with_edges",
