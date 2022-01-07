@@ -57,6 +57,11 @@ class NodeCollection:
         for node_info in self._nodes.values():
             yield node_info.id, node_info.node
 
+
+    def __contains__(self, node):
+        node_hash = hash_node(node)
+        return node_hash in self._nodes
+
 NodeDictValue = namedtuple("NodeDictValue", ['node', 'data'])
 
 class NodeDict(MutableMapping):
