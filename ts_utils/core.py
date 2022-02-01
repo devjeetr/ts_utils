@@ -1,8 +1,8 @@
-from typing import Callable
+from typing import Callable, Optional
 
 from tree_sitter import Node
 
-from .iter import iternodes_with_edges
+from .iter import TraversalFilter, iternodes_with_edges
 
 __all__ = ["hash_node", "node_text", "sexp"]
 
@@ -37,7 +37,8 @@ def node_text(source, node, encoding='utf-8') -> str:
 
 def sexp(cursor,
          wrap: int = 50,
-         node_to_str: Callable[[Node], str] = lambda node: node.type) -> str:
+         node_to_str: Callable[[Node], str] = lambda node: node.type,
+         traversal_filter: Optional[TraversalFilter] = None) -> str:
     """Pretty-formatted s-expr representation of
     the tree rooted at the given cursor. Similar to
     Node.sexp() but formatted differently.
@@ -58,7 +59,7 @@ def sexp(cursor,
         s-expr string
     """
     def named_node_w_edges(cursor):
-        for node, parent, edge in iternodes_with_edges(cursor):
+        for node, parent, edge in iternodes_with_edges(cursor, traversal_filter=traversal_filter):
             if node.is_named:
                 yield node, parent, edge
 

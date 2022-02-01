@@ -36,7 +36,7 @@ default_traversal_filter = always(True)
 
 
 def iternodes(
-    cursor: TreeCursor, traversal_filter: Predicate[Node] = always(True)
+    cursor: TreeCursor, traversal_filter: TraversalFilter = None
 ) -> Generator[Node, None, None]:
     """Performs a tree-order traversal starting from the position of the current cursor.
     The node from which the given cursor is derived is considered to be the root of the 
@@ -48,7 +48,7 @@ def iternodes(
     cursor : TreeCursor
         a tree cursor at which to start
         the traversal
-    traversal_filter : Predicate[Node], optional
+    traversal_filter : TraversalFilter, optional
         a predicate that determines which parts of
         the tree should be explored., by default always(True)
 
@@ -57,6 +57,9 @@ def iternodes(
     Generator[Node, None, None]
         an iterable of nodes in pre-order
     """
+    if traversal_filter is None:
+        traversal_filter = always(True)
+
     reached_root = False
     while reached_root == False:
         node = cursor.node
@@ -84,7 +87,7 @@ def iternodes(
 
 
 def iternodes_indexed(
-    cursor: TreeCursor, traversal_filter: Predicate[Node] = always(True)
+    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
 ) -> Generator[Tuple[int, Node], None, None]:
     """indexed version of iternodes.
 
@@ -102,6 +105,7 @@ def iternodes_indexed(
     Generator[Node, None, None]
         an iterable of nodes in pre-order
     """
+    
     yield from enumerate(iternodes(cursor, traversal_filter=traversal_filter))
 
 
@@ -116,8 +120,8 @@ NodeWithIndex = Tuple[int, Node]
 
 def iternodes_with_parent(
     cursor: TreeCursor,
-    traversal_filter: Predicate[Node] = always(True),
-    parent_filter: Predicate[Node] = always(True),
+    traversal_filter: Optional[Predicate[Node]] = None,
+    parent_filter: Optional[Predicate[Node]] = None,
 ) -> Generator[Tuple[Node, Optional[Node]], None, None]:
     """Performs an inorder traversal starting from the position of the current cursor.
     The node from which the given cursor is derived is considered to be the root of the 
@@ -141,6 +145,11 @@ def iternodes_with_parent(
     Generator[Tuple[TreeCursor, Optional[Move]], None, None]
         an iterable of cursor and optionally move
     """
+    if parent_filter is None:
+        parent_filter = always(True)
+    if traversal_filter is None:
+        traversal_filter = always(True)
+
     reached_root = False
     parent_stack = []
     while reached_root == False:
@@ -175,8 +184,8 @@ def iternodes_with_parent(
 
 
 def iternodes_with_edges(
-    cursor: TreeCursor, traversal_filter: Predicate[Node] = always(True)
-) -> Generator[Tuple[TreeCursor, Optional[Move], Optional[str]], None, None]:
+    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
+) -> Generator[Tuple[Node, Optional[Node], Optional[str]], None, None]:
     """Similar to iternodes_with_parent, but also provides edge (node field)
     information along with the node and it's parent.
 
@@ -194,6 +203,8 @@ def iternodes_with_edges(
     Generator[Tuple[TreeCursor, Optional[Move]], None, None]
         an iterable of cursor and optionally move
     """
+    if traversal_filter is None:
+        traversal_filter = always(True)
     reached_root = False
     parent_stack = []
     while reached_root == False:

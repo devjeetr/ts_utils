@@ -20,6 +20,9 @@ class Node(Protocol):
     def child_by_field_name(self, name: str) -> Optional["Node"]:
         ...
     
+    def walk(self) -> "TreeCursor":
+        ...
+    
     def sexp(self) -> str:
         ...
     
@@ -58,7 +61,11 @@ class Node(Protocol):
     @property
     def has_changes(self )-> bool:
         ...
-    
+        
+    @property
+    def has_error(self) -> bool:
+        ...
+
     @property
     def is_missing(self) -> bool:
         ...
