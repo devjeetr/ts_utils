@@ -39,7 +39,8 @@ class Node(Protocol):
         ...
     
     @property
-    def parent(self) -> "Node":
+    def parent(self) -> Optional["Node"
+    ]:
         ...
 
     @property

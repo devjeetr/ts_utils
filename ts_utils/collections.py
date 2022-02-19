@@ -1,9 +1,12 @@
 from collections import namedtuple
-from typing import Any, Iterable, MutableMapping, Optional
+from dataclasses import dataclass
+from typing import (Any, Generic, ItemsView, Iterable, MutableMapping,
+                    Optional, TypeVar)
 
 from ts_utils.core import hash_node
 from ts_utils.typing import Node
 
+__all__ = ["NodeCollection", "NodeInfo"]
 
 class IdCounter:
     def __init__(self, start=0):
@@ -62,19 +65,28 @@ class NodeCollection:
         node_hash = hash_node(node)
         return node_hash in self._nodes
 
-NodeDictValue = namedtuple("NodeDictValue", ['node', 'data'])
+# NodeDictValue = namedtuple("NodeDictValue", ['node', 'data'])
 
-class NodeDict(MutableMapping):
+
+K = TypeVar("K")
+V = TypeVar("V")
+
+
+@dataclass
+class NodeDictValue(Generic[V]):
+    node: Node
+    data: V
+class NodeDict(MutableMapping[Node, V]):
     """A mutable mapping that allows usage with tree_sitter Nodes.
     """
-    def __init__(self, iterable=None) -> None:
-        self._mapping: dict[Any, NodeDictValue] = {}
+    def __init__(self, iterable: Optional[Iterable[tuple[Node, V]]]=None) -> None:
+        self._mapping: dict[int, NodeDictValue[V]] = {}
 
         if iterable is not None:
             for node, data in iterable:
                 self[node] = data
     
-    def __getitem__(self, node):
+    def __getitem__(self, node: Node):
         _hash = hash_node(node)
 
         if _hash not in self._mapping:
@@ -82,19 +94,33 @@ class NodeDict(MutableMapping):
         
         return self._mapping[_hash].data
     
-    def __setitem__(self, node, value):
+    def __setitem__(self, node: Node, value: V):
         _hash = hash_node(node)
 
         self._mapping[_hash]= NodeDictValue(node, value)
+    
     
     def __delitem__(self, node: Node) -> None:
         _hash = hash_node(node)
 
         del self._mapping[_hash]
     
-    def __iter__(self) -> Iterable:
-        for node_dict_value in self._mapping.values():
-            yield node_dict_value.node, node_dict_value.data
+    def __iter__(self) -> Iterable[Node]:
+        return self.keys()
 
     def __len__(self):
         return len(self._mapping)
+
+    def values(self) -> Iterable[ V]:
+        for entry in self._mapping.values():
+            yield entry.data
+    
+    def keys(self) -> Iterable[Node]:
+        for node_dict_value in self._mapping.values():
+            yield node_dict_value.node
+    
+    def items(self) -> Iterable[tuple[Node, V]]:
+        for entry in self._mapping.values():
+            yield entry.node, entry.data
+    
+
