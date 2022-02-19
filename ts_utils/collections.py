@@ -106,7 +106,7 @@ class NodeDict(MutableMapping[Node, V]):
         del self._mapping[_hash]
     
     def __iter__(self) -> Iterable[Node]:
-        return self.keys()
+        yield from self.keys()
 
     def __len__(self):
         return len(self._mapping)
