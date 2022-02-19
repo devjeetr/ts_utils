@@ -124,7 +124,7 @@ def make_parser(
 
 
 def parse(
-    source: str,
+    source: Union[str, bytes],
     parser_or_language: Union[str, Parser],
     cache_dir=None,
     source_encoding="utf-8",
@@ -133,8 +133,9 @@ def parse(
         parser = make_parser(language=parser_or_language, cache_dir=cache_dir)
     else:
         parser = parser_or_language
-
-    return parser.parse(bytes(source, encoding=source_encoding))
+    
+    source_bytes = source if isinstance(source, bytes) else bytes(source, encoding=source_encoding) 
+    return parser.parse(source_bytes)
 
 
 def get_supertype_mappings(
