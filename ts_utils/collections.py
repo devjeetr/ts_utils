@@ -1,7 +1,7 @@
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import (Any, Generic, ItemsView, Iterable, MutableMapping,
-                    Optional, TypeVar)
+from typing import (Any, Generic, ItemsView, Iterable, Iterator,
+                    MutableMapping, Optional, TypeVar)
 
 from ts_utils.core import hash_node
 from ts_utils.typing import Node
@@ -105,8 +105,8 @@ class NodeDict(MutableMapping[Node, V]):
 
         del self._mapping[_hash]
     
-    def __iter__(self) -> Iterable[Node]:
-        yield from self.keys()
+    def __iter__(self):
+        return self.keys()
 
     def __len__(self):
         return len(self._mapping)
@@ -115,7 +115,7 @@ class NodeDict(MutableMapping[Node, V]):
         for entry in self._mapping.values():
             yield entry.data
     
-    def keys(self) -> Iterable[Node]:
+    def keys(self) -> Iterator[Node]:
         for node_dict_value in self._mapping.values():
             yield node_dict_value.node
     

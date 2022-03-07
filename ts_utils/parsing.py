@@ -14,7 +14,7 @@ __all__ = [
     'get_node_types',
 ]
 
-SUPPORTED_LANGUAGES = {"java", "python", "javascript"}
+SUPPORTED_LANGUAGES = {"java", "python", "javascript", "cpp"}
 
 
 # tree-sitter grammar repo management

@@ -23,8 +23,12 @@ from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 from ts_utils.typing import Node, TreeCursor
 
 __all__ = [
-    "iternodes", "iternodes_with_parent", "iternodes_with_edges",
-    "iternodes_indexed", "Predicate", "TraversalFilter"
+    "iternodes",
+    "iternodes_with_parent",
+    "iternodes_with_edges",
+    "iternodes_indexed",
+    "Predicate",
+    "TraversalFilter",
 ]
 
 T = TypeVar("T")
@@ -39,7 +43,7 @@ def iternodes(
     cursor: TreeCursor, traversal_filter: TraversalFilter = None
 ) -> Generator[Node, None, None]:
     """Performs a tree-order traversal starting from the position of the current cursor.
-    The node from which the given cursor is derived is considered to be the root of the 
+    The node from which the given cursor is derived is considered to be the root of the
     tree. The traversal_filter can be used to determine whether the subtree starting
     at a given node should be traversed, or skipped entirely.
 
@@ -105,7 +109,7 @@ def iternodes_indexed(
     Generator[Node, None, None]
         an iterable of nodes in pre-order
     """
-    
+
     yield from enumerate(iternodes(cursor, traversal_filter=traversal_filter))
 
 
@@ -124,7 +128,7 @@ def iternodes_with_parent(
     parent_filter: Optional[Predicate[Node]] = None,
 ) -> Generator[Tuple[Node, Optional[Node]], None, None]:
     """Performs an inorder traversal starting from the position of the current cursor.
-    The node from which the given cursor is derived is considered to be the root of the 
+    The node from which the given cursor is derived is considered to be the root of the
     tree.
 
     Parameters
@@ -138,7 +142,7 @@ def iternodes_with_parent(
     parent_filter : Predicate[Node], optional
         a predicate that determines which nodes in
         the tree can serve as parent nodes, by default always(True)
-    
+
 
     Yields
     -------
@@ -147,6 +151,7 @@ def iternodes_with_parent(
     """
     if parent_filter is None:
         parent_filter = always(True)
+
     if traversal_filter is None:
         traversal_filter = always(True)
 
@@ -214,7 +219,8 @@ def iternodes_with_edges(
             # by traversal function. If traversal_filter(node) == False,
             # we skip the entire subtree
             yield node, parent_stack[
-                -1] if parent_stack else None, cursor.current_field_name()
+                -1
+            ] if parent_stack else None, cursor.current_field_name()
 
             if cursor.goto_first_child():
                 parent_stack.append(node)
@@ -234,6 +240,28 @@ def iternodes_with_edges(
 
             if cursor.goto_next_sibling():
                 retracing = False
+
+
+def iterchildren(cursor: TreeCursor) -> Iterator[Node]:
+    """Creates an iterator that iterates over all the siblings
+    of the node at the cursor position
+
+    Parameters
+    ----------
+    cursor : TreeCursor
+        cursor at which to start sibling
+        iteration
+
+    Yields
+    -------
+    Iterator[Node]
+        sibling nodes
+    """
+    if not cursor.goto_first_child():
+        return
+
+    while cursor.goto_next_sibling():
+        yield cursor.node
 
 
 def itersiblings(cursor: TreeCursor) -> Iterator[Node]:
