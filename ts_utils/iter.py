@@ -20,7 +20,7 @@ nodes_a == nodes_b # True
 from enum import Enum
 from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 
-from ts_utils.typing import Node, TreeCursor
+from tree_sitter import Node, TreeCursor
 
 __all__ = [
     "iternodes",
@@ -40,7 +40,7 @@ default_traversal_filter = always(True)
 
 
 def iternodes(
-    cursor: TreeCursor, traversal_filter: TraversalFilter = None
+    cursor: TreeCursor, traversal_filter: Optional[TraversalFilter] = None
 ) -> Generator[Node, None, None]:
     """Performs a tree-order traversal starting from the position of the current cursor.
     The node from which the given cursor is derived is considered to be the root of the

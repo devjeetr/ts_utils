@@ -22,7 +22,7 @@ from ts_utils.iter import (
     iternodes_with_parent,
 )
 from ts_utils.parsing import parse
-from ts_utils.typing import Node, Tree
+from tree_sitter import Node, Tree
 
 from .util import all_true
 
@@ -80,9 +80,9 @@ class TraversalMixin:
 
     def iter_with_parent(
         self: SyntaxTreeBase,
-        node: Node = None,
-        parent_filter: TraversalFilter = None,
-        traversal_filter: TraversalFilter = None,
+        node: Optional[Node] = None,
+        parent_filter: Optional[TraversalFilter] = None,
+        traversal_filter: Optional[TraversalFilter] = None,
     ):
         """inorder traversal of the tree, with parent pointers."""
         if node is None:
@@ -94,7 +94,7 @@ class TraversalMixin:
             parent_filter=parent_filter,
         )
 
-    def iter_with_edges(self: SyntaxTreeBase, node: Node = None, traversal_filter=None):
+    def iter_with_edges(self: SyntaxTreeBase, node: Optional[Node] = None, traversal_filter=None):
         """inorder traversal of the tree, with parent pointers and edge information."""
         if node is None:
             node = self.tree.root_node

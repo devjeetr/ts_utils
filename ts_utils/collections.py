@@ -4,7 +4,7 @@ from typing import (Any, Generic, ItemsView, Iterable, Iterator,
                     MutableMapping, Optional, TypeVar)
 
 from ts_utils.core import hash_node
-from ts_utils.typing import Node
+from tree_sitter import Node
 
 __all__ = ["NodeCollection", "NodeInfo"]
 

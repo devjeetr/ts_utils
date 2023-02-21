@@ -2,7 +2,7 @@ from typing import Callable, Optional
 
 from tree_sitter import Node
 
-from .iter import TraversalFilter, iternodes_with_edges
+from ts_utils.iter import TraversalFilter, iternodes_with_edges
 
 __all__ = ["hash_node", "node_text", "sexp"]
 

@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from typing import Optional, Sequence, Tuple
 
-from .typing import Node as INode
-from .typing import Tree as ITree
-from .typing import TreeCursor as ICursor
+from tree_sitter import Node as INode
+from tree_sitter import Tree as ITree
+from tree_sitter import TreeCursor as ICursor
 
 
-class Node(INode):
+class Node:
     children: Sequence['Node']  
     is_named: bool
     type: str
