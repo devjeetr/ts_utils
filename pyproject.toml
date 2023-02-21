@@ -1,25 +1,33 @@
-[tool.poetry]
-authors = ["Devjeet Roy <devjeetrr@gmail.com>"]
-description = ""
+[tool.pdm]
+[tool.pdm.dev-dependencies]
+dev = [
+    "yapf>=0.32.0",
+    "jupyter>=1.0.0",
+    "notebook>=6.5.2",
+    "pytest>=7.2.1",
+    "Sphinx>=5.3.0",
+    "myst-parser>=0.18.1",
+    "pylint>=2.16.2",
+]
+
+[project]
 name = "ts_utils"
 version = "0.1.0"
-
-[tool.poetry.dependencies]
-GitPython = "^3.1.24"
-python = ">=3.9,<4.0"
-tqdm = "^4.62.3"
-scipy = "^1.7.3"
-tree-sitter = "^0.20.1"
-typing-extensions = "^4.5.0"
-
-[tool.poetry.dev-dependencies]
-jupyter = "^1.0.0"
-notebook = "^6.4.6"
-pytest = "^5.2"
-yapf = "^0.31.0"
-Sphinx = "^4.3.2"
-myst-parser = "^0.16.1"
+description = "A utility toolbelt for tree-sitter"
+authors = [
+    {name = "Devjeet Roy", email = "devjeetrr@gmail.com"},
+]
+dependencies = [
+    "GitPython>=3.1.31",
+    "tqdm>=4.64.1",
+    "scipy>=1.9.3",
+    "tree-sitter>=0.20.1",
+    "typing-extensions>=4.5.0",
+]
+requires-python = ">=3.9"
+readme = "README.md"
+license = {text = "MIT"}
 
 [build-system]
-build-backend = "poetry.core.masonry.api"
-requires = ["poetry-core>=1.0.0"]
+requires = ["pdm-pep517>=1.0"]
+build-backend = "pdm.pep517.api"
