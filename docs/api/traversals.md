@@ -1,3 +1,3 @@
 # Traversals
 
-::: ts_utils.iter
+::: ts_utils.traversals
