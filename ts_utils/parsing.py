@@ -5,16 +5,30 @@ from pathlib import Path
 from typing import List, Mapping, Optional, Tuple, Union
 
 from git.repo import Repo
+from loguru import logger
 from tqdm.auto import tqdm
 from tree_sitter import Language, Parser, Tree
+import dataclasses
 
 __all__ = [
     'parse',
     'get_supertype_mappings',
     'get_node_types',
+    'load_grammar',
+    'download_language_repo',
+    'make_parser',
 ]
 
 SUPPORTED_LANGUAGES = {"java", "python", "javascript", "cpp"}
+
+_PathLike = str | Path
+@dataclasses.dataclass(frozen=True, slots=True)
+class LanguageCache:
+    root: _PathLike 
+    languages: Mapping[str, str]
+
+    
+
 
 
 # tree-sitter grammar repo management
@@ -35,7 +49,7 @@ def clone_repo(repo_url: str, repo_path: str):
                 bar.close()
 
         return progress_reporter
-
+    logger.debug("Cloning {repo_url} to {repo_path}", repo_url=repo_url, repo_path=repo_path)
     repo = Repo.clone_from(repo_url, repo_path, progress=make_progress())
     del repo
 
@@ -44,11 +58,14 @@ def get_repo_path(cache_dir: str, language: str):
     return os.path.join(cache_dir, f"tree-sitter-{language}")
 
 
-def get_node_types(language: str, cache_dir: str = None) -> dict:
-    if not cache_dir:
-        cache_dir = get_default_cache_dir()
+def get_node_types(language: str, cache_dir: Optional[str | Path] = None) -> dict:
+    if cache_dir:
+        resolved_cache_dir = Path(cache_dir)
+    else:
+        resolved_cache_dir = get_default_cache_dir()
+    
 
-    repo_path = cache_dir / f"tree-sitter-{language}"
+    repo_path = resolved_cache_dir / f"tree-sitter-{language}"
 
     node_type_path = repo_path / "src/node-types.json"
 
@@ -64,10 +81,10 @@ def download_language_repo(cache_dir: str, language: str):
     clone_repo(f"https://github.com/tree-sitter/{repo_name}", repo_path)
 
 
-def build_language_library(cache_dir: str, library_path: str):
+def build_language_library(cache_dir: _PathLike, library_path: str | Path):
     language_repo_paths = []
     for language in SUPPORTED_LANGUAGES:
-        repo_path = get_repo_path(cache_dir, language)
+        repo_path = get_repo_path(str(cache_dir), language)
         if not os.path.exists(cache_dir):
             os.makedirs(cache_dir)
 
@@ -75,7 +92,7 @@ def build_language_library(cache_dir: str, library_path: str):
             download_language_repo(cache_dir, language)
         language_repo_paths.append(repo_path)
 
-    Language.build_library(library_path, language_repo_paths)
+    Language.build_library(str(library_path), language_repo_paths)
 
 
 def get_default_cache_dir():
@@ -84,24 +101,30 @@ def get_default_cache_dir():
 
 def load_grammar(
     language: str,
-    cache_dir: Optional[str] = None,
+    cache_dir: Optional[str | Path] = None,
     language_library: Optional[str] = None,
 ):
     if not cache_dir:
-        cache_dir = Path().home() / ".cache" / "tree-sitter-grammars"
+        resolved_cache_dir = get_default_cache_dir()
+    else:
+        resolved_cache_dir = Path(cache_dir)
+
+    logger.debug("Loading grammar for language='{language}'", language=language)
     if not language_library:
         language_library = "language_lib.so"
 
     assert (
         language in SUPPORTED_LANGUAGES
     ), f"Invalid language, can be one of [{', '.join(SUPPORTED_LANGUAGES)}]"
-    language_library = os.path.join(cache_dir, language_library)
-    if not os.path.exists(language_library):
-        print(f"Building language library")
-        build_language_library(cache_dir=cache_dir,
-                               library_path=language_library)
+    
+    resolved_language_library_path = resolved_cache_dir / language_library
 
-    return Language(language_library, language)
+    if not os.path.exists(language_library):
+        logger.debug("Building language library, cache_dir={cache_dir}, library_path={library_path}", cache_dir=resolved_cache_dir, library_path=resolved_language_library_path)
+        build_language_library(cache_dir=resolved_cache_dir,
+                               library_path=resolved_language_library_path)
+
+    return Language(str(resolved_language_library_path), language)
 
 
 def make_parser(

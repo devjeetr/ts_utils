@@ -6,10 +6,17 @@ theme:
   name: material
   font:
     code: Fira Code
-
+  features:
+    - content.code.copy
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstrings_section_style: "list"
+
+      
 
 markdown_extensions:
   - pymdownx.highlight:

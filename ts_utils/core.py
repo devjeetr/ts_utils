@@ -1,63 +1,77 @@
 from typing import Callable, Optional
 
-from tree_sitter import Node
-
+from tree_sitter import Node, TreeCursor, Tree
+from typing import Union
 from ts_utils.iter import TraversalFilter, iternodes_with_edges
 
-__all__ = ["hash_node", "node_text", "sexp"]
+__all__ = ["sexp", "TreeLike"]
 
 
-def hash_node(node: Node) -> int:
-    """Deterministically hashes a tree_sitter Node. Uses
-    the node's start_byte, end_byte, type and node type to
-    generate a string hash. 
+TreeLike = Union[TreeCursor, Node, Tree]
+"""A type that can be converted to a TreeCursor."""
 
-    Warning: this function only works with nodes that do not
-    have errors. If a node has errors, the returned hash is
-    not guaranteed to be unique.
+def tree_like_to_cursor(tree_like: TreeLike) -> TreeCursor:
+    if isinstance(tree_like, TreeCursor):
+        return tree_like
+    return tree_like.walk() 
 
-    Parameters
-    ----------
-    node : Node
-        tree_sitter node
-
-    Returns
-    -------
-    str
-        hash of the node
-    """
-    return hash((node.start_byte, node.end_byte, node.type))
-
-
-def node_text(source, node, encoding='utf-8') -> str:
-    source_bytes = bytearray(source, encoding)
-
-    return source_bytes[node.start_byte:node.end_byte].decode(encoding)
-
-
-def sexp(cursor,
+def sexp(tree: TreeLike,
          wrap: int = 50,
          node_to_str: Callable[[Node], str] = lambda node: node.type,
          traversal_filter: Optional[TraversalFilter] = None) -> str:
-    """Pretty-formatted s-expr representation of
-    the tree rooted at the given cursor. Similar to
-    Node.sexp() but formatted differently.
+    """Pretty-formatted s-expr representation ofthe tree rooted at the given cursor. 
 
-    Parameters
-    ----------
-    cursor : TreeCursor
-        tree cursor to print
-    wrap : int, optional
-        if a nodes representation is longer than this number it is printed
-        across multiple lines, by default 50
-    node_to_str : Callable[[Node], str], optional
-        a function that converts a node into a string representation, by default lambdanode:node.type
+    Examples:
+        
+        Basic usage:
 
-    Returns
-    -------
-    str
-        s-expr string
+            >>> source = \"\"\"for i in range(20):
+                                print(i)\"\"\"
+            >>> tree = parse(source, "python")
+            >>> print(sexp(tree))
+            (module
+                (for_statement
+                left: (identifier)
+                right: (call
+                        function: (identifier)
+                        arguments: (argument_list (integer)))
+                body: (block
+                        (expression_statement
+                        (call
+                        function: (identifier)
+                        arguments: (argument_list (identifier)))))))
+            
+            
+        Customizing output using `node_to_str`:
+            
+            # Same tree as above
+            >>> def custom_node_repr(node):
+                    if node.type == "identifier":
+                        return f"{node.type} '{node.text.decode()}'"
+                    return node.type
+            >>> print(sexp(tree))
+            (module
+                (for_statement
+                left: (identifier 'i')
+                right: (call
+                        function: (identifier 'range')
+                        arguments: (argument_list (integer)))
+                body: (block
+                        (expression_statement
+                        (call
+                        function: (identifier 'print')
+                        arguments: (argument_list (identifier 'i')))))))
+        
+    Args:
+        tree: tree cursor to print
+        wrap: line length after which content is wrapped to the next line. Defaults to 50.
+        node_to_str: a function that converts a node into a string representation. Defaults to lambda node:node.type.
+        traversal_filter: a predicate that decides if a node should be included in the sexp. Defaults to None.
+
+    Returns:
+        sexp string representation of tree rooted at cursor.
     """
+    cursor = tree_like_to_cursor(tree) 
     def named_node_w_edges(cursor):
         for node, parent, edge in iternodes_with_edges(cursor, traversal_filter=traversal_filter):
             if node.is_named:
