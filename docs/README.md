@@ -1,4 +1,4 @@
-## ts_utils (Experimental)
+# ts_utils (Experimental)
 
 `ts_utils` provides a lightweight set of utilities to make working with `tree_sitter` more pythonic. It is aimed at users wanting to perform
 read-only analysis of programs using `tree-sitter`.
@@ -14,7 +14,9 @@ read-only analysis of programs using `tree-sitter`.
 pip install git+https://github.com/devjeetr/ts_utils
 ```
 
-### Parsing source into a tree
+### Usage
+
+#### Parsing and language grammar management
 
 `ts_utils.parsing` provides utilities that automate management of language libraries to ease parsing of source code.
 
@@ -33,7 +35,7 @@ tree = parse(source, "python")
 tree = parse(source, language_library)
 ```
 
-### Investigating `node_types` of a language grammar
+#### Investigating `node_types` of a language grammar
 
 You can investigate [node_types](https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types) of a language as follows:
 
@@ -45,7 +47,7 @@ node_types = get_node_types('python') # loads 'node_types.json' if
 
 ```
 
-### Working with `tree_sitter` trees
+#### Working with `tree_sitter` trees
 
 `ts_utils.iter` provides `itertool` style utilities to iterate over
 nodes in a tree. Behind the scenes, `ts_utils.iter` uses efficient `TreeCursor` operations
@@ -60,7 +62,7 @@ for node in iternodes(tree.walk()):
     ...
 ```
 
-All functions in `ts_utils.iter` take an optional argument `traversal_fitler`, which allows you to filter out nodes from the
+All functions in `ts_utils.iter` take an optional argument `traversal_filter`, which allows you to filter out nodes from the
 traversal. If a `traversal_filter(node) == False`, the entire subtree
 rooted at `node` is skipped.
 
@@ -80,35 +82,4 @@ node_iter = iternodes(tree.walk())
 def find(node_types: Set[str], tree: Tree):
     "Finds all nodes that are of a type specified in node_types"
     return filter(lambda node: node.type in node_types, iternodes(tree.walk()))
-```
-
-The traversal order of all functions in `ts_utils.iter` is deterministic
-for a given tree and `traversal_filter`, meaning that regardless of which function you use, nodes will be yielded in the same order. This allows you to simply wrap an iterator with `enumerate` to assign each node a unique id that will be consistent across multiple traversals/iterations.
-
-```python
-only_named_nodes = lambda node: node.is_named
-a = list(iternodes(tree.walk(), only_named_nodes))
-b = list(node for node,parent in iternodes_with_parent(tree.walk(), only_named_nodes))
-
-assert a == b # OK
-```
-
-### Hashing nodes
-
-`ts_utils.hash_node` can hash `tree_sitter` nodes, which by default, are not hashable.
-
-Note: `ts_utils.hash_node` only works with nodes that do not contain errors (`node.has_errors == False`).
-
-### Converting trees to sparse adjacency matrices
-
-`ts_utils.matrix` provides utilities to convert trees to sparse adjacency matrices.
-
-```python
-matrix = ts_utils.matrix.parent_mask(...)
-child_mask = matrix.transpose()
-
-next_sibling_mask = ts_utils.matrix.next_sibling_mask(...)
-prev_sibling_mask = ts_utils.matrix.prev_sibling_mask(...)
-
-all_edges = parent_mask * child_mask * next_sibling_mask * prev_sibling_mask
 ```

@@ -10,6 +10,7 @@ dev = [
     "mkdocs-simple-blog>=0.0.6",
     "mkdocs-gitbook>=0.0.1",
     "mkdocs-material>=9.0.15",
+    "mkdocstrings[python]>=0.20.0",
 ]
 
 [project]

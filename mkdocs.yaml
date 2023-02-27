@@ -1,10 +1,15 @@
 site_name: ts_utils 
 site_url: https://devjeetrr.github.io/ts_utils/
+repo_url: https://github.com/devjeetr/ts_utils
 
 theme: 
   name: material
+  font:
+    code: Fira Code
+
 plugins:
   - search
+  - mkdocstrings
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -12,4 +17,7 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.superfences
 
+
+watch:
+  - ts_utils
 

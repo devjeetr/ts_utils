@@ -209,6 +209,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "griffe"
+version = "0.25.5"
+requires_python = ">=3.7"
+summary = "Signatures for entire Python programs. Extract the structure, the frame, the skeleton of your project, to generate API documentation or find breaking changes in your API."
+dependencies = [
+    "colorama>=0.4",
+]
+
+[[package]]
 name = "idna"
 version = "3.4"
 requires_python = ">=3.5"
@@ -538,6 +547,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "mkdocs-autorefs"
+version = "0.4.1"
+requires_python = ">=3.7"
+summary = "Automatically link across pages in MkDocs."
+dependencies = [
+    "Markdown>=3.3",
+    "mkdocs>=1.1",
+]
+
+[[package]]
 name = "mkdocs-gitbook"
 version = "0.0.1"
 summary = "Default theme for GitBook for Mkdocs"
@@ -572,6 +591,41 @@ requires_python = ">=3.6"
 summary = "Mkdocs Blog Theme"
 dependencies = [
     "mkdocs>=1.4.2",
+]
+
+[[package]]
+name = "mkdocstrings"
+version = "0.20.0"
+requires_python = ">=3.7"
+summary = "Automatic documentation from sources, for MkDocs."
+dependencies = [
+    "Jinja2>=2.11.1",
+    "Markdown>=3.3",
+    "MarkupSafe>=1.1",
+    "mkdocs-autorefs>=0.3.1",
+    "mkdocs>=1.2",
+    "pymdown-extensions>=6.3",
+]
+
+[[package]]
+name = "mkdocstrings-python"
+version = "0.8.3"
+requires_python = ">=3.7"
+summary = "A Python handler for mkdocstrings."
+dependencies = [
+    "griffe>=0.24",
+    "mkdocstrings>=0.19",
+]
+
+[[package]]
+name = "mkdocstrings"
+version = "0.20.0"
+extras = ["python"]
+requires_python = ">=3.7"
+summary = "Automatic documentation from sources, for MkDocs."
+dependencies = [
+    "mkdocstrings-python>=0.5.2",
+    "mkdocstrings==0.20.0",
 ]
 
 [[package]]
@@ -1112,7 +1166,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:ae2546a5cc63ee2ea6a9c240baaab8e571c141b91d89a7fdd00ff8c5d1bfb9df"
+content_hash = "sha256:c4c966bc3e21158c36c8347ac9d5287db66c2648b748062ce367fde327e366c4"
 
 [metadata.files]
 "anyio 3.6.2" = [
@@ -1409,6 +1463,10 @@ content_hash = "sha256:ae2546a5cc63ee2ea6a9c240baaab8e571c141b91d89a7fdd00ff8c5d
     {url = "https://files.pythonhosted.org/packages/5f/11/2b0f60686dbda49028cec8c66bd18a5e82c96d92eef4bc34961e35bb3762/GitPython-3.1.31.tar.gz", hash = "sha256:8ce3bcf69adfdf7c7d503e78fd3b1c492af782d58893b650adb2ac8912ddd573"},
     {url = "https://files.pythonhosted.org/packages/9e/8a/d1e02cc111d65b0346f70abb83c51f8593e7134bf694a4a56d1a470caaf7/GitPython-3.1.31-py3-none-any.whl", hash = "sha256:f04893614f6aa713a60cbbe1e6a97403ef633103cdd0ef5eb6efe0deb98dbe8d"},
 ]
+"griffe 0.25.5" = [
+    {url = "https://files.pythonhosted.org/packages/4d/ad/31b565138799489114cb9459175dff2a8b478f37a2a88ed855682701d519/griffe-0.25.5.tar.gz", hash = "sha256:11ea3403ef0560a1cbcf7f302eb5d21cf4c1d8ed3f8a16a75aa9f6f458caf3f1"},
+    {url = "https://files.pythonhosted.org/packages/6d/6c/66f79cadb453a6c9d3d447501008641e2848adf81cee27462f0b308be8de/griffe-0.25.5-py3-none-any.whl", hash = "sha256:1fb9edff48e66d4873014a2ebf21aca5f271d0006a4c937826e3cf592ffb3706"},
+]
 "idna 3.4" = [
     {url = "https://files.pythonhosted.org/packages/8b/e1/43beb3d38dba6cb420cefa297822eac205a277ab43e5ba5d5c46faf96438/idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
     {url = "https://files.pythonhosted.org/packages/fc/34/3030de6f1370931b9dbb4dad48f6ab1015ab1d32447850b9fc94e60097be/idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
@@ -1612,6 +1670,10 @@ content_hash = "sha256:ae2546a5cc63ee2ea6a9c240baaab8e571c141b91d89a7fdd00ff8c5d
     {url = "https://files.pythonhosted.org/packages/ff/00/58f2939f8e6c5f981d9ad9b685c9915a3b315c8f34ba93f0020d64929f70/mkdocs-1.4.2-py3-none-any.whl", hash = "sha256:c8856a832c1e56702577023cd64cc5f84948280c1c0fcc6af4cd39006ea6aa8c"},
     {url = "https://files.pythonhosted.org/packages/ff/2c/932a6df2847c0ecf0875cd00bede939225734b2815fc866c78edb46d9e5d/mkdocs-1.4.2.tar.gz", hash = "sha256:8947af423a6d0facf41ea1195b8e1e8c85ad94ac95ae307fe11232e0424b11c5"},
 ]
+"mkdocs-autorefs 0.4.1" = [
+    {url = "https://files.pythonhosted.org/packages/3b/3f/9531888bc92bafb1bffddca5d9240a7bae9a479d465528883b61808ef9d6/mkdocs-autorefs-0.4.1.tar.gz", hash = "sha256:70748a7bd025f9ecd6d6feeba8ba63f8e891a1af55f48e366d6d6e78493aba84"},
+    {url = "https://files.pythonhosted.org/packages/fb/5c/6594400290df38f99bf8d9ef249387b56f4ad962667836266f6fe7da8597/mkdocs_autorefs-0.4.1-py3-none-any.whl", hash = "sha256:a2248a9501b29dc0cc8ba4c09f4f47ff121945f6ce33d760f145d6f89d313f5b"},
+]
 "mkdocs-gitbook 0.0.1" = [
     {url = "https://files.pythonhosted.org/packages/62/82/de16d4c4005688328d9dee78db95b8fc9acf6f5b2523f464f60e6a22f2e3/mkdocs_gitbook-0.0.1-py2.py3-none-any.whl", hash = "sha256:e929c3caf655076eaa030128cfd104687b9ec14644d54f4a175d43e13ac60ef8"},
     {url = "https://files.pythonhosted.org/packages/e1/65/a4d51a87817f8d62d938d86c03f595a89d40770f1f96daeae1bae1e9d9ad/mkdocs-gitbook-0.0.1.tar.gz", hash = "sha256:c094f9d77e47d54379a0d3816097b56511e760fedb23dcf89bc925f6ac4e75f3"},
@@ -1627,6 +1689,14 @@ content_hash = "sha256:ae2546a5cc63ee2ea6a9c240baaab8e571c141b91d89a7fdd00ff8c5d
 "mkdocs-simple-blog 0.0.6" = [
     {url = "https://files.pythonhosted.org/packages/12/f6/fc390cb23afb2e3c1d35d2e6092685cd35683dd96d7d7c9efe07237fc7e8/mkdocs-simple-blog-0.0.6.tar.gz", hash = "sha256:ac19ccc7d7f6a01bdf3aab5f64500286c386e4c9e49f5f04bcf1ae43a8fb1091"},
     {url = "https://files.pythonhosted.org/packages/d0/d9/96ae32bdaae27d489e71ff562f8590b45feaa7c142bf71ae1094b8307867/mkdocs_simple_blog-0.0.6-py3-none-any.whl", hash = "sha256:952269d2bfc330e3080b8013cda36cfd84ff4ea261f1e40ff4279bb0030f932a"},
+]
+"mkdocstrings 0.20.0" = [
+    {url = "https://files.pythonhosted.org/packages/22/08/dd06d533879ba4694bb31b0f4b8d8ec3b50ed51d8717083bdf6a8a0bd065/mkdocstrings-0.20.0-py3-none-any.whl", hash = "sha256:f17fc2c4f760ec302b069075ef9e31045aa6372ca91d2f35ded3adba8e25a472"},
+    {url = "https://files.pythonhosted.org/packages/70/03/6efc9dbff20304a4dc826eb8411d462afb44c8b1605b7d707c70a5ba8169/mkdocstrings-0.20.0.tar.gz", hash = "sha256:c757f4f646d4f939491d6bc9256bfe33e36c5f8026392f49eaa351d241c838e5"},
+]
+"mkdocstrings-python 0.8.3" = [
+    {url = "https://files.pythonhosted.org/packages/2c/30/47c1db07d5a6ecbf9a8ea251e1cfb91ec5f8bc4ab1ead417dcc1932ab616/mkdocstrings-python-0.8.3.tar.gz", hash = "sha256:9ae473f6dc599339b09eee17e4d2b05d6ac0ec29860f3fc9b7512d940fc61adf"},
+    {url = "https://files.pythonhosted.org/packages/76/ea/7aba526196a8c6f7bb2748dcdb815e073e730303939768c089b5b357deae/mkdocstrings_python-0.8.3-py3-none-any.whl", hash = "sha256:4e6e1cd6f37a785de0946ced6eb846eb2f5d891ac1cc2c7b832943d3529087a7"},
 ]
 "nbclassic 0.5.2" = [
     {url = "https://files.pythonhosted.org/packages/51/c7/b9a89a54f0da8d9464b60f727331d954ea9deb8a1b92be47620bf3b032af/nbclassic-0.5.2.tar.gz", hash = "sha256:40f11bbcc59e8956c3d5ef132dec8e5a853e893ecf831e791d54da0d8a50d79d"},
