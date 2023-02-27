@@ -1,3 +1,11 @@
+"""Utilities for managing retrieval, building and caching of tree-sitter grammars.
+
+`tree-sitter` requires the user to build a parser for each language they want to parse.
+This can be quite cumbersome, when dealing with multiple languages, changing versions
+of language grammars etc. This module provides a set of utilities to make this process
+quick and painless.
+
+"""
 import json
 import os
 from collections import defaultdict
@@ -11,12 +19,12 @@ from tree_sitter import Language, Parser, Tree
 import dataclasses
 
 __all__ = [
+    'download_language_repo',
+    'load_grammar',
     'parse',
+    'make_parser',
     'get_supertype_mappings',
     'get_node_types',
-    'load_grammar',
-    'download_language_repo',
-    'make_parser',
 ]
 
 SUPPORTED_LANGUAGES = {"java", "python", "javascript", "cpp"}
@@ -27,7 +35,7 @@ class LanguageCache:
     root: _PathLike 
     languages: Mapping[str, str]
 
-    
+
 
 
 
@@ -136,7 +144,15 @@ def make_parser(
     the language library is not specified, it will download the language
     grammar from github and cache it. Subsequent calls will reuse the
     cached grammar.
-    """
+
+    Args:
+        language: language short name
+        cache_dir: directory in which to cache language repository and library. Defaults to None.
+        language_library: language library from which the grammar should be loaded. Defaults to None.
+
+    Returns:
+        tree-sitter parser for the provided language
+    """    
     grammar = load_grammar(language,
                            cache_dir=cache_dir,
                            language_library=language_library)
@@ -165,21 +181,17 @@ def get_supertype_mappings(
     language: str,
     cache_dir: Optional[str] = None
 ) -> Tuple[Mapping[str, List[str]], Mapping[str, str]]:
-    """Loads node <-> supertype mappings for give programming language. This
-    is obtained from node-types.json file, if included within the repository.
+    """Loads node <-> supertype mappings for give programming language.
+    
+    This is obtained from node-types.json file, if included within the repository(refer 
+    [Static Nodetypes](https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types)).
+    Args:
+        language: language to load mappings for
+        cache_dir: directory to use for caching language repositories. Defaults to None.
 
-    Parameters
-    ----------
-    language : str
-        programming language
-    cache_dir : str, optional
-        cache dir to use for ts git repos, by default None
-
-    Returns
-    -------
-    Tuple[Mapping[str, List[str]], Mapping[str, str]]
+    Returns:
         super_type to subtypes, subtype to supertype
-    """
+    """    
     node_types = get_node_types(language, cache_dir=cache_dir)
 
     node_to_supertype = {}

@@ -40,7 +40,8 @@ default_traversal_filter = always(True)
 
 
 def iternodes(
-    cursor: TreeCursor, traversal_filter: Optional[TraversalFilter] = None
+    cursor: TreeCursor,
+    traversal_filter: Optional[TraversalFilter] = None
 ) -> Generator[Node, None, None]:
     """Performs a tree-order traversal starting from the position of the current cursor.
     The node from which the given cursor is derived is considered to be the root of the
@@ -91,7 +92,8 @@ def iternodes(
 
 
 def iternodes_indexed(
-    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
+    cursor: TreeCursor,
+    traversal_filter: Optional[Predicate[Node]] = None
 ) -> Generator[Tuple[int, Node], None, None]:
     """indexed version of iternodes.
 
@@ -189,7 +191,8 @@ def iternodes_with_parent(
 
 
 def iternodes_with_edges(
-    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
+    cursor: TreeCursor,
+    traversal_filter: Optional[Predicate[Node]] = None
 ) -> Generator[Tuple[Node, Optional[Node], Optional[str]], None, None]:
     """Similar to iternodes_with_parent, but also provides edge (node field)
     information along with the node and it's parent.
@@ -219,8 +222,7 @@ def iternodes_with_edges(
             # by traversal function. If traversal_filter(node) == False,
             # we skip the entire subtree
             yield node, parent_stack[
-                -1
-            ] if parent_stack else None, cursor.current_field_name()
+                -1] if parent_stack else None, cursor.current_field_name()
 
             if cursor.goto_first_child():
                 parent_stack.append(node)
