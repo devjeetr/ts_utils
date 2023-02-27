@@ -11,6 +11,7 @@ dev = [
     "mkdocs-gitbook>=0.0.1",
     "mkdocs-material>=9.0.15",
     "mkdocstrings[python]>=0.20.0",
+    "toml>=0.10.2",
 ]
 
 [project]
