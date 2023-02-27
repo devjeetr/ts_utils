@@ -1,0 +1,15 @@
+site_name: ts_utils 
+site_url: https://devjeetrr.github.io/ts_utils/
+
+theme: 
+  name: material
+plugins:
+  - search
+
+markdown_extensions:
+  - pymdownx.highlight:
+      use_pygments: true
+      anchor_linenums: true
+  - pymdownx.superfences
+
+

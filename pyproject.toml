@@ -5,9 +5,11 @@ dev = [
     "jupyter>=1.0.0",
     "notebook>=6.5.2",
     "pytest>=7.2.1",
-    "Sphinx>=5.3.0",
-    "myst-parser>=0.18.1",
     "pylint>=2.16.2",
+    "mkdocs>=1.4.2",
+    "mkdocs-simple-blog>=0.0.6",
+    "mkdocs-gitbook>=0.0.1",
+    "mkdocs-material>=9.0.15",
 ]
 
 [project]
