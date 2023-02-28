@@ -14,9 +14,9 @@ read-only analysis of programs using `tree-sitter`.
 pip install git+https://github.com/devjeetr/ts_utils
 ```
 
-### Usage
+## Usage
 
-#### Parsing and language grammar management
+### Parsing and language grammar management
 
 `ts_utils.parsing` provides utilities that automate management of language libraries to ease parsing of source code.
 
@@ -35,7 +35,7 @@ tree = parse(source, "python")
 tree = parse(source, language_library)
 ```
 
-#### Investigating `node_types` of a language grammar
+### Investigating `node_types` of a language grammar
 
 You can investigate [node_types](https://tree-sitter.github.io/tree-sitter/using-parsers#static-node-types) of a language as follows:
 
@@ -47,12 +47,12 @@ node_types = get_node_types('python') # loads 'node_types.json' if
 
 ```
 
-#### Working with `tree_sitter` trees
+### Working with `tree_sitter` trees
 
+#### High Level Iterators
 `ts_utils.iter` provides `itertool` style utilities to iterate over
 nodes in a tree. Behind the scenes, `ts_utils.iter` uses efficient `TreeCursor` operations
 resulting in as close to bare-bones performance as possible.
-
 ```python
 from ts_utils.iter import iternodes, iternodes_with_parent
 
@@ -82,4 +82,44 @@ node_iter = iternodes(tree.walk())
 def find(node_types: Set[str], tree: Tree):
     "Finds all nodes that are of a type specified in node_types"
     return filter(lambda node: node.type in node_types, iternodes(tree.walk()))
+```
+
+#### Low Level Iterators
+If you want to implement your own tree traversals, use `traversals.walk_tree`. `walk_tree`
+traverses the tree using the `TreeCursor` API in the minimum number of moves. Unlike traditional
+traversals, `walk_tree` visits each node twice - when the node is first reached, and after the
+processing of all it's children. For example, consider the following tree structure:
+```python
+from ts_utils.cursor_utils import tuple_cursor
+from ts_utils.traversals import walk_tree
+tree = (1, 
+        (2, 3),
+        (4, 5))
+
+list(walk_tree(tree))
+```
+This will yield nodes in the following order:
+``` python
+[(1, 'DOWN'), # Start the traversal by descending into the root
+ (2, 'DOWN'),
+ (3, 'DOWN'), # Each node is visited twice. If a node is a leaf,
+ (3, 'UP'),   # it will be yielded twice.
+ (2, 'UP'),
+ (4, 'RIGHT'),
+ (5, 'DOWN'),
+ (5, 'UP'),
+ (4, 'UP'),
+ (1, 'UP')]   # End traversal by moving up beyond tree root
+```
+
+Using the move information can allow you to hook into enter and exit lifecycles for
+nodes to implement higher level traversal operations. For example:
+```python
+def filter_moves(valid_moves, cursor):
+    return filter(
+        lambda cursor, move: move in valid_moves, 
+        walk_tree(cursor))
+
+preorder = filter_moves((Moves.DOWN, Moves.RIGHT))
+postorder = filter_moves((Moves.UP))
 ```

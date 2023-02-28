@@ -8,6 +8,9 @@ theme:
     code: Fira Code
   features:
     - content.code.copy
+    - content.code.select
+    - content.code.annotate
+    
 plugins:
   - search
   - mkdocstrings:
@@ -16,12 +19,21 @@ plugins:
           options:
             docstrings_section_style: "list"
 
+# nav:
+#   - Overview: "README.md"
+#   - 'API Reference':
+#     - 'General Utilities': "api/general.md"
+#     - 'Traversals': "api/traversals.md"
+#     - 'Language Library Management': "api/language_utils.md"
       
 
 markdown_extensions:
   - pymdownx.highlight:
-      use_pygments: true
       anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
   - pymdownx.superfences
 
 
