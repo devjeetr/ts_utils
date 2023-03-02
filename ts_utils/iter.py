@@ -21,6 +21,8 @@ from enum import Enum
 from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 
 from tree_sitter import Node, TreeCursor
+from ts_utils.cursor_utils import Cursor
+from ts_utils.traversals import CursorLike, Moves, filter_moves, walk_tree
 
 __all__ = [
     "iternodes",
@@ -40,55 +42,29 @@ default_traversal_filter = always(True)
 
 
 def iternodes(
-    cursor: TreeCursor,
-    traversal_filter: Optional[TraversalFilter] = None
-) -> Generator[Node, None, None]:
-    """Performs a tree-order traversal starting from the position of the current cursor.
+        cursor: TreeCursor,
+        traversal_filter: Optional[TraversalFilter] = None) -> Iterator[Node]:
+    """Performs a preorder traversal starting from the position of the current cursor.
+
     The node from which the given cursor is derived is considered to be the root of the
     tree. The traversal_filter can be used to determine whether the subtree starting
     at a given node should be traversed, or skipped entirely.
 
-    Parameters
-    ----------
-    cursor : TreeCursor
-        a tree cursor at which to start
-        the traversal
-    traversal_filter : TraversalFilter, optional
-        a predicate that determines which parts of
-        the tree should be explored., by default always(True)
+    Args:
+        cursor: a tree cursor at which to start the traversal
+        traversal_filter: a predicate that determines which parts of
+        the tree should be explored.. Defaults to None.
 
-    Yields
-    -------
-    Generator[Node, None, None]
+    Returns:
         an iterable of nodes in pre-order
     """
-    if traversal_filter is None:
-        traversal_filter = always(True)
 
-    reached_root = False
-    while reached_root == False:
-        node = cursor.node
-
-        if traversal_filter(node):
-            # We only traverse nodes that are filtered
-            # by traversal function. If traversal_filter(node) == False,
-            # we skip the entire subtree
-            yield node
-
-            if cursor.goto_first_child():
-                continue
-
-        if cursor.goto_next_sibling():
-            continue
-
-        retracing = True
-        while retracing:
-            if not cursor.goto_parent():
-                retracing = False
-                reached_root = True
-
-            if cursor.goto_next_sibling():
-                retracing = False
+    iterator = walk_tree(
+        cursor,
+        should_traverse=lambda cursor: traversal_filter(cursor.node)
+        if traversal_filter else True)
+    iterator = filter_moves(Moves.DOWN, Moves.RIGHT)(iterator)
+    return map(lambda cursor: cursor[0].node, iterator)
 
 
 def iternodes_indexed(
