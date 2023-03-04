@@ -22,7 +22,7 @@ from typing import Callable, Generator, Iterator, Optional, Tuple, TypeVar
 
 from tree_sitter import Node, TreeCursor
 from ts_utils.cursor_utils import Cursor
-from ts_utils.traversals import CursorLike, Moves, filter_moves, walk_tree
+from ts_utils.traversals import CursorLike, Moves, filter_moves, traverse
 
 __all__ = [
     "iternodes",
@@ -59,7 +59,7 @@ def iternodes(
         an iterable of nodes in pre-order
     """
 
-    iterator = walk_tree(
+    iterator = traverse(
         cursor,
         should_traverse=lambda cursor: traversal_filter(cursor.node)
         if traversal_filter else True)

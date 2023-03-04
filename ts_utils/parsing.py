@@ -30,17 +30,17 @@ __all__ = [
 SUPPORTED_LANGUAGES = {"java", "python", "javascript", "cpp"}
 
 _PathLike = str | Path
+
+
 @dataclasses.dataclass(frozen=True, slots=True)
 class LanguageCache:
-    root: _PathLike 
+    root: _PathLike
     languages: Mapping[str, str]
-
-
-
 
 
 # tree-sitter grammar repo management
 def clone_repo(repo_url: str, repo_path: str):
+
     def make_progress():
         bar = tqdm()
         total = None
@@ -57,7 +57,10 @@ def clone_repo(repo_url: str, repo_path: str):
                 bar.close()
 
         return progress_reporter
-    logger.debug("Cloning {repo_url} to {repo_path}", repo_url=repo_url, repo_path=repo_path)
+
+    logger.debug("Cloning {repo_url} to {repo_path}",
+                 repo_url=repo_url,
+                 repo_path=repo_path)
     repo = Repo.clone_from(repo_url, repo_path, progress=make_progress())
     del repo
 
@@ -66,12 +69,12 @@ def get_repo_path(cache_dir: str, language: str):
     return os.path.join(cache_dir, f"tree-sitter-{language}")
 
 
-def get_node_types(language: str, cache_dir: Optional[str | Path] = None) -> dict:
+def get_node_types(language: str,
+                   cache_dir: Optional[str | Path] = None) -> dict:
     if cache_dir:
         resolved_cache_dir = Path(cache_dir)
     else:
         resolved_cache_dir = get_default_cache_dir()
-    
 
     repo_path = resolved_cache_dir / f"tree-sitter-{language}"
 
@@ -117,18 +120,20 @@ def load_grammar(
     else:
         resolved_cache_dir = Path(cache_dir)
 
-    logger.debug("Loading grammar for language='{language}'", language=language)
     if not language_library:
         language_library = "language_lib.so"
 
     assert (
         language in SUPPORTED_LANGUAGES
     ), f"Invalid language, can be one of [{', '.join(SUPPORTED_LANGUAGES)}]"
-    
+
     resolved_language_library_path = resolved_cache_dir / language_library
 
     if not os.path.exists(language_library):
-        logger.debug("Building language library, cache_dir={cache_dir}, library_path={library_path}", cache_dir=resolved_cache_dir, library_path=resolved_language_library_path)
+        logger.debug(
+            "Building language library, cache_dir={cache_dir}, library_path={library_path}",
+            cache_dir=resolved_cache_dir,
+            library_path=resolved_language_library_path)
         build_language_library(cache_dir=resolved_cache_dir,
                                library_path=resolved_language_library_path)
 
@@ -152,7 +157,7 @@ def make_parser(
 
     Returns:
         tree-sitter parser for the provided language
-    """    
+    """
     grammar = load_grammar(language,
                            cache_dir=cache_dir,
                            language_library=language_library)
@@ -172,8 +177,9 @@ def parse(
         parser = make_parser(language=parser_or_language, cache_dir=cache_dir)
     else:
         parser = parser_or_language
-    
-    source_bytes = source if isinstance(source, bytes) else bytes(source, encoding=source_encoding) 
+
+    source_bytes = source if isinstance(source, bytes) else bytes(
+        source, encoding=source_encoding)
     return parser.parse(source_bytes)
 
 
@@ -191,7 +197,7 @@ def get_supertype_mappings(
 
     Returns:
         super_type to subtypes, subtype to supertype
-    """    
+    """
     node_types = get_node_types(language, cache_dir=cache_dir)
 
     node_to_supertype = {}

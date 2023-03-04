@@ -117,6 +117,9 @@ class GenericCursor(Cursor[V], Generic[T, V]):
 
         return False
 
+    def __repr__(self):
+        return f"Cursor({self.node})"
+
 
 TupleNode = tuple[T, tuple["TupleNode[T]", ...]] | T
 """A nested tuple representing a tree structure.
@@ -129,7 +132,7 @@ TupleNode = tuple[T, tuple["TupleNode[T]", ...]] | T
 """
 
 
-def tuple_cursor(tree: TupleNode[T]):
+def tuple_cursor(tree: TupleNode[T]) -> GenericCursor[TupleNode[T], T]:
     """A cursor for a tree represented as nested tuples.
 
     Args:
