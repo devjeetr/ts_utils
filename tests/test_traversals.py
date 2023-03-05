@@ -63,7 +63,7 @@ def test_broadcastl():
     context = ({1: "root", 5: "child", 6: "grandchild"})
 
     stream = traverse(tuple_cursor(tree))
-    stream = broadcastl(lambda _, cursor: context.get(cursor.node, NO_CONTEXT))(
+    stream = broadcastl(lambda _, cursor: context.get(cursor.node, NO_CONTEXT)).bind(
         stream)
     results = collections.defaultdict(set)
 
@@ -80,7 +80,6 @@ def test_broadcastl():
     }
 
 
-@broadcastl
 def get_context(prev_context: int | NoContext, cursor ) -> int | NoContext:
         match (prev_context, cursor.node):
             case (NoContext(), _):
@@ -95,7 +94,7 @@ def test_broadcastl_with_reducer():
     tree = (1, (4, (5, (6, 7))))
 
     stream = traverse(tuple_cursor(tree))
-    stream = get_context(stream)
+    stream = broadcastl(get_context).bind(stream)
     results = collections.defaultdict(set)
 
     for context_value, (cursor, _) in stream:
@@ -112,23 +111,23 @@ def test_broadcastl_with_reducer():
         
     }
 
-def test_broadcastr():
-    tree = (1, (4, (5, (6, 7))))
+# def test_broadcastr():
+#     tree = (1, (4, (5, (6, 7))))
 
-    stream = traverse(tuple_cursor(tree))
-    stream = get_context(stream)
-    results = collections.defaultdict(set)
+#     stream = traverse(tuple_cursor(tree))
+#     stream = broadcastl(get_context).bind(stream)
+#     results = collections.defaultdict(set)
 
-    for context_value, (cursor, _) in stream:
-        if context_value != NO_CONTEXT:
-            results[cursor.node].add(context_value)
+#     for context_value, (cursor, _) in stream:
+#         if context_value != NO_CONTEXT:
+#             results[cursor.node].add(context_value)
 
-    assert results == {
-        # 1 should not have any context
+#     assert results == {
+#         # 1 should not have any context
         
-        4: {1},
-        5: {14},
-        6: {145},
-        7: {1456}
+#         4: {1},
+#         5: {14},
+#         6: {145},
+#         7: {1456}
         
-    }
+#     }
