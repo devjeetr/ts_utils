@@ -4,7 +4,8 @@ import functools
 from typing import Callable, Generic, Iterator, NewType, Optional, Sequence, Type, TypeVar, cast
 from tree_sitter import TreeCursor
 from ts_utils.cursor_utils import Cursor
-from typing import dataclass_transform, Any, ParamSpec
+from typing import Any, ParamSpec
+from typing_extensions import dataclass_transform
 
 import abc
 
