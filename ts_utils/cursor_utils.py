@@ -1,5 +1,6 @@
-from typing import Self, Sequence, Type, Protocol, cast
+from typing import Sequence, Type, Protocol, cast
 from typing import Generic, TypeVar, Literal
+from typing_extensions import Self
 
 import dataclasses
 from typing import Generator, Iterator, Callable, Optional
