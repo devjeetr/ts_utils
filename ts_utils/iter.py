@@ -42,8 +42,8 @@ default_traversal_filter = always(True)
 
 
 def iternodes(
-        cursor: TreeCursor,
-        traversal_filter: Optional[TraversalFilter] = None) -> Iterator[Node]:
+    cursor: TreeCursor, traversal_filter: Optional[TraversalFilter] = None
+) -> Iterator[Node]:
     """Performs a preorder traversal starting from the position of the current cursor.
 
     The node from which the given cursor is derived is considered to be the root of the
@@ -62,14 +62,15 @@ def iternodes(
     iterator = traverse(
         cursor,
         should_traverse=lambda cursor: traversal_filter(cursor.node)
-        if traversal_filter else True)
+        if traversal_filter
+        else True,
+    )
     iterator = filter_moves(Moves.DOWN, Moves.RIGHT)(iterator)
     return map(lambda cursor: cursor[0].node, iterator)
 
 
 def iternodes_indexed(
-    cursor: TreeCursor,
-    traversal_filter: Optional[Predicate[Node]] = None
+    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
 ) -> Generator[Tuple[int, Node], None, None]:
     """indexed version of iternodes.
 
@@ -135,10 +136,9 @@ def iternodes_with_parent(
 
     reached_root = False
     parent_stack = []
-    while reached_root == False:
+    while not reached_root:
         node = cursor.node
         if traversal_filter(node):
-
             # We only traverse nodes that are filtered
             # by traversal function. If traversal_filter(node) == False,
             # we skip the entire subtree
@@ -167,8 +167,7 @@ def iternodes_with_parent(
 
 
 def iternodes_with_edges(
-    cursor: TreeCursor,
-    traversal_filter: Optional[Predicate[Node]] = None
+    cursor: TreeCursor, traversal_filter: Optional[Predicate[Node]] = None
 ) -> Generator[Tuple[Node, Optional[Node], Optional[str]], None, None]:
     """Similar to iternodes_with_parent, but also provides edge (node field)
     information along with the node and it's parent.
@@ -191,14 +190,13 @@ def iternodes_with_edges(
         traversal_filter = always(True)
     reached_root = False
     parent_stack = []
-    while reached_root == False:
+    while not reached_root:
         node = cursor.node
         if traversal_filter(node):
             # We only traverse nodes that are filtered
             # by traversal function. If traversal_filter(node) == False,
             # we skip the entire subtree
-            yield node, parent_stack[
-                -1] if parent_stack else None, cursor.current_field_name()
+            yield node, parent_stack[-1] if parent_stack else None, cursor.field_name
 
             if cursor.goto_first_child():
                 parent_stack.append(node)
