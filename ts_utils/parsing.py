@@ -27,7 +27,16 @@ __all__ = [
     "get_node_types",
 ]
 
-SUPPORTED_LANGUAGES = {"java", "python", "javascript", "cpp"}
+SUPPORTED_LANGUAGES = {
+    "java",
+    "python",
+    "javascript",
+    "cpp",
+    "java",
+    "c",
+    "c-sharp",
+    "go",
+}
 
 _PathLike = str | Path
 
